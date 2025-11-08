@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "202444688325",
+    "project_id": "rijad-budget-app",
+    "storage_bucket": "rijad-budget-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202444688325:android:d68c9877df3e2ec33e59ac",
+        "android_client_info": {
+          "package_name": "com.codingliquids.budgetappstarting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "202444688325-qekj3pam1uc96pcsqamel8pka8704mj6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codingliquids.budgetappstarting",
+            "certificate_hash": "e90c9bc924156d52b38da15cce86344014ca96e9"
+          }
+        },
+        {
+          "client_id": "202444688325-bqqmc1tj2ahkvbcalp1epu0em48pchth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwefc7HlHA6yLM-CyBfc8RC1R9qvDq5i0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "202444688325-alkjevs2comntg8sit7oltllocfes2ls.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "202444688325-7do59j8fg28oc7mdoo98o1utnh4e6mf2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codingliquids.budgetAppStarting"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
