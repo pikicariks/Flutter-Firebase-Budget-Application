@@ -40,6 +40,17 @@ class ViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> signInWithGoogleWeb(BuildContext context) async {
+    final googleProvider = GoogleAuthProvider();
+
+    await _auth.signInWithPopup(googleProvider).
+      then((_) => logger.d("Current user UID present? " '${_auth.currentUser?.uid.isNotEmpty ?? false}',))
+      .onError((error,stackTrace) {
+        logger.d(error);
+        return DialogBox(context, error.toString().replaceAll(RegExp(r'\[.*?\]'), ''));
+      });
+  }
+
   Future<void> signInWithGoogleMobile(BuildContext context) async {
     final GoogleSignInAccount account = await _google
         .authenticate(scopeHint: const ['email'])
@@ -68,4 +79,28 @@ class ViewModel extends ChangeNotifier {
     });
   }
 
-}
+  //Authewntication
+  Future<void> createUserWithEmailAndPassword(
+    BuildContext context, String email, String password
+  ) async {
+
+    await _auth.createUserWithEmailAndPassword(email: email, password: password).then((value) => logger.d("Reg successful")).onError((error,stackTrace) {
+      logger.d("Registration error $error");
+      DialogBox(context, error.toString().replaceAll(RegExp('\\[.*?\\]'), ''));
+    });
+
+    return;
+  }
+
+  Future<void> signInWithEmailPass(
+    BuildContext context, String email, String password
+  ) async {
+
+    await _auth.signInWithEmailAndPassword(email: email, password: password).then((value) => logger.d("Login successful")).onError((error,stackTrace) {
+      logger.d("Login error $error");
+      DialogBox(context, error.toString().replaceAll(RegExp('\\[.*?\\]'), ''));
+    });
+
+    return;
+  }
+} 

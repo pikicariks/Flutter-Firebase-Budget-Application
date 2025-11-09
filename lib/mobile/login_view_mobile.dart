@@ -1,8 +1,12 @@
+import 'package:budget_app_starting/components.dart';
 import 'package:budget_app_starting/view_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sign_button/constants.dart';
+import 'package:sign_button/create_button.dart';
 
 class LoginViewMobile extends HookConsumerWidget {
   @override
@@ -69,8 +73,64 @@ class LoginViewMobile extends HookConsumerWidget {
             SizedBox(height: 30.0,),
             Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 50.0, width: 150.0,)
-            ],)
+              //Register button
+              SizedBox(height: 50.0, width: 150.0,
+              child: MaterialButton(
+                onPressed: () async {
+                  await viewModelProvider.createUserWithEmailAndPassword(context, _emailField.text,_passworDField.text);
+                },
+                child: OpenSans(
+                  text: "Register",
+                   size: 25.0,
+                   color: Colors.white,
+                  ),
+                  splashColor: Colors.grey,
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10.0),
+                  ),
+
+              ),
+              ),
+              SizedBox(width: 20.0,),
+              Text("Or", style: GoogleFonts.pacifico(color: Colors.black, fontSize: 15.0),) ,
+              SizedBox(width: 20.0,),
+              //Login button
+              SizedBox(height: 50.0,width: 150.0,
+              child: MaterialButton(
+                onPressed: () async {
+                  await viewModelProvider.signInWithEmailPass(context, _emailField.text,_passworDField.text);
+                },
+                child: OpenSans(
+                  text: "Login",
+                   size: 25.0,
+                   color: Colors.white,
+                  ),
+                  splashColor: Colors.grey,
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10.0),
+                  ),
+              ),
+              ),
+              SizedBox(height: 30.0,),
+            ],),
+            SizedBox(height: 30.0,),
+                          //Google sing in button
+            SignInButton(
+              buttonType: ButtonType.google,
+              btnColor: Colors.black,
+              btnTextColor: Colors.white,
+              buttonSize: ButtonSize.medium,
+              onPressed: () async {
+                if(kIsWeb){
+                  await viewModelProvider.signInWithGoogleWeb(context);
+                }
+                else {
+                  await viewModelProvider.signInWithGoogleMobile(context);
+                }
+              },
+              ),
           ],
         ),
       ),
