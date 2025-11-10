@@ -103,4 +103,174 @@ class ViewModel extends ChangeNotifier {
 
     return;
   }
+
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  //db
+
+  Future<void> addExpense(BuildContext context) async{
+    final formKey = GlobalKey<FormState>();
+
+    TextEditingController controllerName = TextEditingController();
+    TextEditingController controllerAmount = TextEditingController();
+
+    return await showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+      actionsAlignment: MainAxisAlignment.center,
+      contentPadding: EdgeInsets.all(32.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      title: Form(
+        key: formKey,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextForm(text: "Name", containerWidth: 130.0, hintText: "Name", controller: controllerName, validator: (text) {
+              if(text.toString().isEmpty) {
+                return "Required";
+              }
+            }),
+            SizedBox(width: 10.0,),
+            TextForm(text: "Amount", containerWidth: 100.0, hintText: "Amount", controller: controllerAmount, validator: (text) {
+              if(text.toString().isEmpty) {
+                return "Required";
+              }
+            }),
+            SizedBox(width: 10.0,),
+          ],
+        ),
+      ),
+      actions: [
+        MaterialButton(
+          child: OpenSans(text: "Save", size: 15.0, color: Colors.white,),
+          splashColor: Colors.grey,
+          color: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              await userCollection.doc(_auth.currentUser!.uid).collection('expenses')
+              .add({
+                "name":controllerName.text,
+                "amount":controllerAmount.text
+              }).onError((error,stackTrace) {
+                logger.d("add expense error = $error");
+                return DialogBox(context, error.toString());
+              });
+              Navigator.pop(context);
+            }
+          },
+        )
+      ],
+    ));
+  }
+
+
+  Future<void> addIncome(BuildContext context) async{
+    final formKey = GlobalKey<FormState>();
+
+    TextEditingController controllerName = TextEditingController();
+    TextEditingController controllerAmount = TextEditingController();
+
+    return await showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+      actionsAlignment: MainAxisAlignment.center,
+      contentPadding: EdgeInsets.all(32.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        side: BorderSide(width: 1.0, color: Colors.black)
+      ),
+      title: Form(
+        key: formKey,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextForm(text: "Name", containerWidth: 130.0, hintText: "Name", controller: controllerName, validator: (text) {
+              if(text.toString().isEmpty) {
+                return "Required";
+              }
+            }),
+            SizedBox(width: 10.0,),
+            TextForm(text: "Amount", containerWidth: 100.0, hintText: "Amount", digitsOnly: true, controller: controllerAmount, validator: (text) {
+              if(text.toString().isEmpty) {
+                return "Required";
+              }
+            }),
+            SizedBox(width: 10.0,),
+          ],
+        ),
+      ),
+      actions: [
+        MaterialButton(
+          child: OpenSans(text: "Save", size: 15.0, color: Colors.white,),
+          splashColor: Colors.grey,
+          color: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              await userCollection.doc(_auth.currentUser!.uid).collection('incomes')
+              .add({
+                "name":controllerName.text,
+                "amount":controllerAmount.text
+              }).then((val) {
+                logger.d("Income added");
+              }).onError((error,stackTrace) {
+                logger.d("add income error = $error");
+                return DialogBox(context, error.toString());
+              });
+              Navigator.pop(context);
+            }
+          },
+        )
+      ],
+    ));
+  }
+
+    void expensesStream() async{
+      await for(var snapshot in userCollection.doc(_auth.currentUser!.uid).collection("expenses").snapshots()){
+
+        expensesAmount = [];
+        expensesName = [];
+
+        for (var expense in snapshot.docs) {
+          expensesName.add(expense.data()['name']);
+          expensesAmount.add(expense.data()['amount']);
+          notifyListeners();
+        }
+      }
+  }
+
+      void incomesStream() async{
+      await for(var snapshot in userCollection.doc(_auth.currentUser!.uid).collection("incomes").snapshots()){
+
+        incomesAmount = [];
+        incomesName = [];
+
+        for (var income in snapshot.docs) {
+          incomesName.add(income.data()['name']);
+          incomesAmount.add(income.data()['amount']);
+          notifyListeners();
+        }
+      }
+  }
+
+  Future<void> reset() async {
+    await userCollection.doc(_auth.currentUser!.uid).collection("expenses") .get()
+      .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+
+          await userCollection.doc(_auth.currentUser!.uid).collection("incomes") .get()
+      .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+  }
 } 
